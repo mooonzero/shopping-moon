@@ -18,7 +18,7 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -28,8 +28,11 @@ public class Order {
     private OrderStatus orderStatus; //주문 상태
 
     //mappedBy 속성의 값으로 연관 관계의 주인을 설정
-    // CascadeType.ALL  : 주문 영속성 전이
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    //CascadeType.ALL  : 주문 영속성 전이
+    //orphanRemoval = true : 고아 객체 제거
+    //fetch = FetchType.LAZY : 지연 로딩
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,
+                orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
     //하나의 주문이 여러 개의 주문 상품을 가지므로 List 자료형을 사용해서 매핑
 
