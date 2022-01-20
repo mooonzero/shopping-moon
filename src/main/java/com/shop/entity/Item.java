@@ -6,14 +6,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "item")
 @Getter
 @Setter
 @ToString
-public class Item {
+public class Item extends BaseEntity{
 
     //상품 코드
     @Id
@@ -43,9 +42,9 @@ public class Item {
     @Enumerated(EnumType.STRING)
     private ItemSellStatus itemSellStatus;
 
+    //BaseEntity를 상속 받아서 두 변수 삭제
     //등록 시간
-    private LocalDateTime regTime;
-
+    //private LocalDateTime regTime;
     //수정 시간
-    private LocalDateTime updateTime;
+    //private LocalDateTime updateTime;
 }

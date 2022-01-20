@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 @Getter @Setter
-public class Order {
+public class Order extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "order_id")
@@ -36,9 +36,9 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<>();
     //하나의 주문이 여러 개의 주문 상품을 가지므로 List 자료형을 사용해서 매핑
 
-    private LocalDateTime regTime;
-
-    private LocalDateTime updateTime;
+    //BaseEntity를 상속 받아서 두 변수 삭제
+    //private LocalDateTime regTime;
+    //private LocalDateTime updateTime;
 
 
 }

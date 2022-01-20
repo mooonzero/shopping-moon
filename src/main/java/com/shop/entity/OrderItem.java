@@ -4,11 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
-public class OrderItem {
+public class OrderItem extends BaseEntity{
 
     @Id @GeneratedValue
     @Column(name = "order_item_id")
@@ -27,7 +26,7 @@ public class OrderItem {
 
     private int count; // 수량
 
-    private LocalDateTime regTime;
-
-    private LocalDateTime updateTime;
+    //BaseEntity를 상속 받아서 두 변수 삭제
+    //private LocalDateTime regTime;
+    //private LocalDateTime updateTime;
 }
