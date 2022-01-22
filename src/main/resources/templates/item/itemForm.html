@@ -131,7 +131,7 @@
                 <div th:if="${#strings.isEmpty(itemFormDto.id)}" style="text-align: center">
                         <button th:formaction="@{/admin/item/new}" type="submit" class="btn btn-primary">저장</button>
                 </div>
-                <!--2-->
+                <!--상품의 아이디가 있는 경우, 수정 로직을 호출하는 버튼을 보여줌-->
                 <div th:unless="${#strings.isEmpty(itemFormDto.id)}" style="text-align: center">
                         <button th:formaction="@{'/admin/item/' + ${itemFormDto.id} }" type="submit" class="btn btn-primary">수정</button>
                 </div>
