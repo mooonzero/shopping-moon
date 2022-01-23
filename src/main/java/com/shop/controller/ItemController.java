@@ -1,17 +1,57 @@
 package com.shop.controller;
 
 import com.shop.dto.ItemFormDto;
+import com.shop.service.ItemService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.Valid;
+import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class ItemController {
+
+    private final ItemService itemService;
 
     @GetMapping(value = "/admin/item/new")
     public String itemForm(Model model){
         //상품 등록 페이지에 접근할 수 있게 하도록 하기 위해 코드 추가.
         model.addAttribute("itemFormDto", new ItemFormDto());
         return "/item/itemForm";
+    }
+
+    @PostMapping(value = "/admin/item/new")
+    public String itemNew(@Valid ItemFormDto itemFormDto, BindingResult bindingResult, Model model,
+                          @RequestParam("itemImgFile")List<MultipartFile> itemImgFileList){
+
+        //bindingResult : validate 값을 받는 class에서 객체값을 검증하는 방식
+        //상품 등록 시 필수 값이 없다면, 다시 상품 등록 페이지로 전환해줌.
+       if(bindingResult.hasErrors()){
+           model.addAttribute("errorMessage", "상품 등록 시 필요한 필수 값이 없습니다.");
+            return "item/itemForm";
+        }
+
+       //상품 등록 시 첫 번째 이미지가 없을때 에러메시지 && 상품 등록 페이지 전환
+       if(itemImgFileList.get(0).isEmpty() && itemFormDto.getId() == null){
+           model.addAttribute("errorMessage", "첫 번째 상품 이미지는 필수 입력 값입니다.");
+           return "item/itemForm";
+       }
+
+       try {
+           //상품 저장 로직 호출, 매개변수는 상품 정보(itemFormDto),상품 이미지 정보(itemImgFileList)
+           itemService.saveItem(itemFormDto, itemImgFileList);
+       }catch(Exception e){
+           model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
+           return "item/itemForm";
+       }
+        //상품이 정상적으로 등록되면 main page로 이동
+        return "redirect:/";
     }
 }
