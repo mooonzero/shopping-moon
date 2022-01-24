@@ -2,6 +2,7 @@ package com.shop.service;
 //상품 등록 class
 
 import com.shop.dto.ItemFormDto;
+import com.shop.dto.ItemImgDto;
 import com.shop.entity.Item;
 import com.shop.entity.ItemImg;
 import com.shop.repository.ItemImgRepository;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,5 +48,29 @@ public class ItemService {
             itemImgService.savedItemImg(itemImg, itemImgFileList.get(i));
         }
         return item.getId();
+    }
+
+    //상품 데이터를 읽어오는 트랜잭션을 읽기 전용으로 설정 -> 성능 향상
+    @Transactional(readOnly = true)
+    public  ItemFormDto getItemDtl(Long itemId){
+
+        //해당상품 이미지 조회
+        List<ItemImg> itemImgList =
+                itemImgRepository.findByItemIdOrderByIdAsc(itemId);
+        List<ItemImgDto> itemImgDtoList = new ArrayList<>();
+
+        //조회한 ItemImg entity를  ItemImgDto 객체로 만들어서 리스트에 추가
+        for (ItemImg itemImg : itemImgList){
+            ItemImgDto itemImgDto = ItemImgDto.of(itemImg);
+            itemImgDtoList.add(itemImgDto);
+        }
+        //상품 아이디를 통해 상품 엔티티 조회
+        //존재하지 않을 때 EntityNotFoundException 발생 시킴.
+        // ::new :
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(EntityNotFoundException::new);
+        ItemFormDto itemFormDto = ItemFormDto.of(item);
+        itemFormDto.setItemImgDtoList(itemImgDtoList);
+        return itemFormDto;
     }
 }
