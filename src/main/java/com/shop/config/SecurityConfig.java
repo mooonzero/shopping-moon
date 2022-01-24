@@ -46,6 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //mvcMatchers("/admin/**").hasRole("ADMIN") : /admin으로 시작하는 경로는 해당 계정이 ADMIN Role일 경우에만 접근 가능하도록 설정
         //anyRequest().authenticated() : 위에서 설정해준 경로를 제외한 나머지 경로들은 모드 인증을 요구하도록 설정
 
+        /* 상위 식으로 현재 ADMIN 아이디로 로그인 한 경우가 아닌 이상 /admin/** 페이지에 접속할 때 에러 페이지 뜸
+        *  나중에 상품 등록 페이지로 넘어가는 이동 버튼 만들 때, USER 아이디로 누르면 alert 창 뜨게 해주는걸로 만족해야하나 ...
+        * */
+
         http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
         //인증되지 않은 사용자가 리소스에 접근하였을 때 수행되는 핸들러를 등록
     }
