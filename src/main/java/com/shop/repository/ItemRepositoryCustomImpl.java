@@ -60,6 +60,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
 
     @Override
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
+
         QueryResults<Item> results = queryFactory.selectFrom(QItem.item)
                                         .where(regDtsAfter(itemSearchDto.getSearchDateType()),
                                                 searchSellStatusEq(itemSearchDto.getSearchSellStatus()),
@@ -69,7 +70,10 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
                                         .offset(pageable.getOffset())
                                         .limit(pageable.getPageSize())
                                         .fetchResults();
-
+        //where 조건 절 안의 ','는 and로 인식됨
+        //offset : 데이터를 가지고 올 시작 인덱스를 지정
+        //limit : 한 번에 가지고 올 최대 개수를 지정
+        //fetchResults() : 조회한 리스트 및 전체 개수를 포함하는 QueryResults를 반환.
         List<Item> content = results.getResults();
         long total = results.getTotal();
         return new PageImpl<>(content,pageable,total);
