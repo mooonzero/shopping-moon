@@ -1,6 +1,5 @@
 package com.shop.repository;
 
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shop.constant.ItemSellStatus;
@@ -61,21 +60,36 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
     @Override
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
 
-        QueryResults<Item> results = queryFactory.selectFrom(QItem.item)
-                                        .where(regDtsAfter(itemSearchDto.getSearchDateType()),
-                                                searchSellStatusEq(itemSearchDto.getSearchSellStatus()),
-                                                searchByLike(itemSearchDto.getSearchBy(),
-                                                        itemSearchDto.getSearchQuery()))
-                                        .orderBy(QItem.item.id.desc())
-                                        .offset(pageable.getOffset())
-                                        .limit(pageable.getPageSize())
-                                        .fetchResults();
+//        QueryResults<Item> results = queryFactory.selectFrom(QItem.item)
+//                                        .where(regDtsAfter(itemSearchDto.getSearchDateType()),
+//                                                searchSellStatusEq(itemSearchDto.getSearchSellStatus()),
+//                                                searchByLike(itemSearchDto.getSearchBy(),
+//                                                        itemSearchDto.getSearchQuery()))
+//                                        .orderBy(QItem.item.id.desc())
+//                                        .offset(pageable.getOffset())
+//                                        .limit(pageable.getPageSize())
+//                                        .fetchResults();
         //where 조건 절 안의 ','는 and로 인식됨
         //offset : 데이터를 가지고 올 시작 인덱스를 지정
         //limit : 한 번에 가지고 올 최대 개수를 지정
         //fetchResults() : 조회한 리스트 및 전체 개수를 포함하는 QueryResults를 반환.
-        List<Item> content = results.getResults();
-        long total = results.getTotal();
+        //querydsl 5.0부터는 fetchResults()와 fetchCount()가 deprecated 됨.
+        //QueryResults로 count query를 반환하는게 완벽하게 지원 X, total count를 사용할 필요가 없으면 fetch() 사용을 권장.
+
+        List<Item> results = queryFactory.selectFrom(QItem.item)
+                .where(regDtsAfter(itemSearchDto.getSearchDateType()),
+                        searchSellStatusEq(itemSearchDto.getSearchSellStatus()),
+                        searchByLike(itemSearchDto.getSearchBy(),
+                                itemSearchDto.getSearchQuery()))
+                .orderBy(QItem.item.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        // fetchResults 대신 fetch 사용을 위해 List로 반환 해주는걸로 바꿨지만
+        // fetchResult의 count나 paging이 안되니까 .. 아래 두 코드가 오류 ... count 내는걸 size()로 수정해줬지만 권장하지 않는 방법..
+        // 일단 이런식으로 ,, subList는 list에서 페이징 처리 해주는 방법 total은 size말고 다른 방법 찾아보기
+        List<Item> content = results.subList(1,5);
+        long total = results.size();
         return new PageImpl<>(content,pageable,total);
     }
 }
