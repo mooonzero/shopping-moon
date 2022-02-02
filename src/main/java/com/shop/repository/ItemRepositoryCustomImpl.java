@@ -86,7 +86,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom{
                 .limit(pageable.getPageSize())
                 .fetch();
         // fetchResults 대신 fetch 사용을 위해 List로 반환 해주는걸로 바꿨지만
-        // fetchResult의 count나 paging이 안되니까 .. 아래 두 코드가 오류 ... count 내는걸 size()로 수정해줬지만 권장하지 않는 방법..
+        // fetchResult의 total count나 paging이 안되니까 .. 아래 두 코드가 오류 ... count 내는걸 size()로 수정해줬지만 권장하지 않는 방법..
         // 일단 이런식으로 ,, subList는 list에서 페이징 처리 해주는 방법 total은 size말고 다른 방법 찾아보기
         List<Item> content = results.subList(1,5);
         long total = results.size();
