@@ -1,8 +1,13 @@
 package com.shop.controller;
 
 import com.shop.dto.ItemFormDto;
+import com.shop.dto.ItemSearchDto;
+import com.shop.entity.Item;
 import com.shop.service.ItemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -98,19 +104,20 @@ public class ItemController {
    }
     //url에 페이지 번호가 없는 경우와 있는 경우를 함께 매핑
     //optional, isPresent() error.. 해결하기
-//   @GetMapping(value = {"/admin/items", "/admin/items/{page}"})
-//    public String itemManage(ItemSearchDto itemSearchDto,
-//                             @PathVariable("page") Optional<Integer> page, Model model){
-//       // PageRequest.of 메소드를 통해 pageable 객체 생성
-//       //첫번째 param : 조회할 페이지 번호
-//       //두번째 param : 한 번에 가지고 올 데이터 수
-//       //isPresent()를 통해  페이지 번호가 있으면 해당 페이지 조회하도록 세팅, 없으면 0페이지 조회
-//       Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
-//       Page<Item> items = itemService.getAdminItemPage(itemSearchDto, pageable);
-//                    model.addAttribute("items", items);
-//                    // 페이지 전환 시 기존 검색 조건을 유지한 채 이동할 수 있도록 view에 다시 전달
-//                    model.addAttribute("itemSearchDto", itemSearchDto);
-//                    model.addAttribute("maxPage", 5);
-//                    return "item/itemMng";
-//   }
+   @GetMapping(value = {"/admin/items", "/admin/items/{page}"})
+    public String itemManage(ItemSearchDto itemSearchDto,
+                             @PathVariable("page") Optional<Integer> page, Model model){
+       // PageRequest.of 메소드를 통해 pageable 객체 생성
+       //첫번째 param : 조회할 페이지 번호
+       //두번째 param : 한 번에 가지고 올 데이터 수
+       //isPresent()를 통해  페이지 번호가 있으면 해당 페이지 조회하도록 세팅, 없으면 0페이지 조회
+       //isPresent() 대신 orElseThrow를 사용해줘야하할거같음
+       Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
+       Page<Item> items = itemService.getAdminItemPage(itemSearchDto, pageable);
+                    model.addAttribute("items", items);
+                    // 페이지 전환 시 기존 검색 조건을 유지한 채 이동할 수 있도록 view에 다시 전달
+                    model.addAttribute("itemSearchDto", itemSearchDto);
+                    model.addAttribute("maxPage", 5);
+                    return "item/itemMng";
+   }
 }
