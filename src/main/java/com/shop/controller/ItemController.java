@@ -112,7 +112,9 @@ public class ItemController {
        //두번째 param : 한 번에 가지고 올 데이터 수
        //isPresent()를 통해  페이지 번호가 있으면 해당 페이지 조회하도록 세팅, 없으면 0페이지 조회
        //isPresent() 대신 orElseThrow를 사용해줘야하할거같음
-       Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 10);
+       Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, 3);
+       // orElseGet 사용했지만 과도한 람다식 사용이라는 error 나고 whiteLabel error 아직 해결 안됨 ;;
+      // Pageable pageable = PageRequest.of(page.orElseGet(()->0),3);
        Page<Item> items = itemService.getAdminItemPage(itemSearchDto, pageable);
                     model.addAttribute("items", items);
                     // 페이지 전환 시 기존 검색 조건을 유지한 채 이동할 수 있도록 view에 다시 전달
