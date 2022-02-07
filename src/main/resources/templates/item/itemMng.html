@@ -6,7 +6,7 @@
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-
+<!-- 검색버튼 클릭시 form 태그 전송 막아주고, 버튼을 클릭할 페이지 번호로 0번째 페이지 조회하는 page 함수 호출-->
         $(document).ready(function(){
             $("#searchBtn").on("click",function(e) {
                 e.preventDefault();
