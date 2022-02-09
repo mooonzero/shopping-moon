@@ -63,7 +63,7 @@
             </tr>
             </tbody>
         </table>
-
+        <!-- th:with :: 변수값을 정의할 때 사용-->
         <div th:with="start=${(items.number/maxPage)*maxPage + 1}, end=(${(items.totalPages == 0) ? 1 : (start + (maxPage - 1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})" >
             <ul class="pagination justify-content-center">
 
