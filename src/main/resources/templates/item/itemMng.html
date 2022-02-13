@@ -4,9 +4,9 @@
       layout:decorate="~{layouts/layout1}">
 
 <!-- 사용자 스크립트 추가 -->
+<!-- 에러 수정이 안됨; 인텔리제이 유료버전 구매 안해서 생기는 오류라는데 ;;; 무료버전 해결방법을 따라해도 해결이 안됨 ㅠ-->
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-<!-- 검색버튼 클릭시 form 태그 전송 막아주고, 버튼을 클릭할 페이지 번호로 0번째 페이지 조회하는 page 함수 호출-->
         $(document).ready(function(){
             $("#searchBtn").on("click",function(e) {
                 e.preventDefault();
